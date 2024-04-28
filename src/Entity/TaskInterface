@@ -1,0 +1,9 @@
+<?php
+
+namespace App\Entity;
+
+Interface TaskInterface
+{
+    public function hasParent() : int;
+    public function isCompleted() : Bool;
+}
