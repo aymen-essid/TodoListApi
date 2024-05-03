@@ -4,9 +4,10 @@ namespace App\Service;
 
 use App\Entity\Task;
 
-interface ApiInterface 
-{
+// interface ApiInterface 
+// {
 
-    public function serialize() : array ;
+//     public function toArray() : array ;
+//     public function toJson() : string ;
 
-}
+// }

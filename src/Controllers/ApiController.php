@@ -3,10 +3,8 @@
 namespace App\Controllers;
 
 use App\Entity\Task;
-use App\Service\DbConnect;
 use App\Service\TaskManager;
 use DateTime;
-use PDO;
 
 class ApiController extends AbstractController
 {
@@ -15,50 +13,57 @@ class ApiController extends AbstractController
     
     public function __construct()
     {
+        parent::__construct();
         $this->taskManager = new TaskManager();
-
-        // get url params
-        // $this->getUrlParams()->entity
     }
 
     
     public function list(){
 
-        $data = $this->taskManager->getAll();
+        if($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            $data = $this->taskManager->getAll();
 
-        $this->jsonHttpResponse('200', $data);
+            $this->api->jsonHttpResponse('200', $data);
+        }
     }
 
     public function create(){
+
         if($_SERVER['REQUEST_METHOD'] === 'POST')
         {
             $json = file_get_contents("php://input");
-            $data = json_decode($json);
-  
-            $task = new Task;
-            $task->setTitle($data->title);
-            $task->setDescription($data->description);
-            $task->setParentId($data->parentId);
-            $task->setCompleted($data->completed);
-            $task->setCreatedAt(new DateTime());
-            $task->setUpdatedAt(new DateTime());
 
-            
+            $task = new Task();
+            $task = $task->deserialize($json);
 
             $insertedId = $this->taskManager->create($task);
             $task->setId($insertedId);
+            $task = $this->taskManager->getTaskById($insertedId);
+            
 
-            return $this->jsonHttpResponse('200', $task->serialize() );
+            return $this->api->jsonHttpResponse('200', $task );
         }
-        
-        // $data = $this->taskManager->create($task);
 
-        $this->jsonHttpResponse('200', "{0 : 'create', 1 : '".$this->getUrlParams()->entity."'}" );
     }
     
-    public function add(){
+    public function update(){
 
-        echo "<h1>add method user entity</h1>";
+        if($_SERVER['REQUEST_METHOD'] === 'PUT' )
+        {
+            $json = file_get_contents("php://input");
+            $jsonObj = json_decode($json); 
+            
+            $taskObj = $this->taskManager->getTaskById($jsonObj->id);
+            
+            dd($taskObj);
+            
+
+            return $this->api->jsonHttpResponse('200', '' );
+            
+        }
+
+        $this->api->jsonHttpResponse('200', "{0 : 'create', 1 : '".$this->getUrlParams()->entity."'}" );
     }
 
     

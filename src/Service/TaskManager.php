@@ -32,7 +32,7 @@ class TaskManager
         $sql = "SELECT * FROM task";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
     // Read a task item by ID
@@ -40,17 +40,19 @@ class TaskManager
         $sql = "SELECT * FROM task WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_OBJ);
     }
 
     // Update a task item
-    public function update(Task $task) {
+    public function update($data) {
+    
         $sql = "UPDATE task 
                 SET title = ?, description = ?, completed = ?, parentId = ?, updatedAt = ?
                 WHERE id = ?";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$task->getTitle(), $task->getDescription(), $task->getCompleted(),
-                        $task->getParentId(), $task->getCreatedAt(), $task->getId()]);
+        $now = new DateTime();
+        $stmt->execute([$data['title'], $data['description'], $data['completed'],
+                        $data['parentId'], $now->format('Y-m-d H:i:s'), $data['id']]);
         return $stmt->rowCount() > 0;
     }
 

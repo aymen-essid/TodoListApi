@@ -11,6 +11,4 @@ interface InterfaceController
 
     public function render(string $tplFile);
 
-    public function jsonHttpResponse($httpCode, $data) : void;
-
 }

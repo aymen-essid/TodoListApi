@@ -5,32 +5,17 @@ namespace App\Entity;
 
 use App\Service\ApiInterface;
 use DateTime;
+use stdClass;
 
-Class Task implements ApiInterface
+Class Task /* implements ApiInterface */
 {
     private int $id;
     private int $parentId;
     private string $title;
     private string $description;
+    private bool $completed;
     private DateTime $createdAt;
     private DateTime $updatedAt;
-    private bool $completed;
-
-
-    public function serialize() : array 
-    {
-        return [
-            'id' => $this->getId(),
-            'title' => $this->getTitle(),
-            'description' => $this->getDescription(),
-            'parentId' => $this->getParentId(),
-            'completed' => $this->getCompleted(),
-            'createdAt' => $this->getCreatedAt()->format('d-m-Y H:i:s'),
-            'updatedAt' => $this->getUpdatedAt()->format('d-m-Y H:i:s')
-        ];
-    }
-
-    
     
 
     /**
@@ -126,7 +111,7 @@ Class Task implements ApiInterface
      *
      * @return  self
      */ 
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt($createdAt = null)
     {
         $this->createdAt = $createdAt;
 
@@ -146,7 +131,7 @@ Class Task implements ApiInterface
      *
      * @return  self
      */ 
-    public function setUpdatedAt($updatedAt)
+    public function setUpdatedAt($updatedAt = null)
     {
         $this->updatedAt = $updatedAt;
 
@@ -179,6 +164,51 @@ Class Task implements ApiInterface
             return true;
         else
             return false;
+    }
+
+    public static function hydrate(stdClass $data): self
+    {
+        $task = new Task;
+        $task->setId($data->id ?? '');
+        $task->setTitle($data->title ?? '');
+        $task->setDescription($data->description ?? '');
+        $task->setParentId($data->parentId ?? '');
+        $task->setCompleted($data->completed ?? '');
+        $task->setCreatedAt($data->createdAt ?? '');
+        $task->setUpdatedAt($data->updatedAt ?? '');
+        
+        return $task;
+    }
+
+
+    # Convert Task from Json to Task Object
+    public function deserialize(string $json) : Task
+    {
+        $data = json_decode($json, true);
+   
+        $task = new Task;
+        $task->setTitle($data['title']);
+        $task->setDescription($data['description']);
+        $task->setParentId($data['parentId']);
+        $task->setCompleted($data['completed']);
+
+        return $task;
+    }
+
+    # Convert Task Object to Json
+    public function serialize(Task $obj) : string 
+    {
+
+        $array = [
+            'id' => $obj->getId(),
+            'title' => $obj->getTitle(),
+            'description' => $obj->getDescription(),
+            'parentId' => $obj->getParentId(),
+            'completed' => $obj->getCompleted(),
+        ];
+
+        $json = json_encode($array);
+        return $json;
     }
 
 }
