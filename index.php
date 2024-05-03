@@ -1,39 +1,29 @@
 <?php
 
+namespace App;
+
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
-// rest of the code
 
 // phpinfo(); die;
-
 
 require 'vendor/autoload.php';
 
 
-use App\Entity\User;
-use App\Service\DbConnect;
-use Twig\Loader\FilesystemLoader;
+use App\Service\DbHandler;
+use App\Service\RouterService;
 use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 require_once('database/config.php');
+require_once('routes.conf.php');
 
-$dbConnexion = new DbConnect();
+# Init Db Connexion
+$dbConnexion = new DbHandler();
 
-
-
-var_dump($dbConnexion); die;
-
-$loader = new FilesystemLoader('src/Views');
-$twig = new Environment($loader, [
-    // 'cache' => 'cache',
-    'cache' => false,
-]);
-
-$template = $twig->load('home.html.twig');
-
-// echo $twig->render($template);
-
-$twig->display($template);
+# Init Routing
+$route = new RouterService($_SERVER['REQUEST_URI'], $routesConf );
+$route->dispatch();
 
 ?>

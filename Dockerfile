@@ -45,6 +45,9 @@ RUN apt-get update && apt-get install apt-file -y && apt-file update && apt-get 
 
 RUN docker-php-ext-install pdo pdo_mysql
 
+# Enable mod_rewrite
+RUN a2enmod rewrite
+
 # Use the default production configuration for PHP runtime arguments, see
 # https://github.com/docker-library/docs/tree/master/php#configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"

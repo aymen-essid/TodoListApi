@@ -5,7 +5,7 @@ namespace App\Service;
 use PDO;
 use PDOException;
 
-class DbConnect
+class DbHandler extends PDO
 {
 
     private const USER = DB_USERNAME;
@@ -14,12 +14,14 @@ class DbConnect
     private const SERVER_PORT = DB_SERVER_PORT;
     private const DB_NAME = DB_NAME;
 
+    private $connexion;
+
     public function __construct()
     {
-        $this->connect();
+        $this->connexion = $this->connect();
     }
 
-    private static function connect(): PDO
+    public function connect(): PDO
     {
 
         $dsn = 'mysql:host=' .self::SERVER. ';port=' . self::SERVER_PORT . ';dbname=' . self::DB_NAME ;
@@ -30,7 +32,8 @@ class DbConnect
             printf("Échec de la connexion : %s\n", $e->getMessage());
             exit();
         }
-        
+
         return $connexion;
     }
+
 }

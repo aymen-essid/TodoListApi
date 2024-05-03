@@ -2,23 +2,96 @@
 
 namespace App\Controllers;
 
+use App\Service\ApiException;
 use App\Service\ApiHandler;
-use App\Service\DbConnect;
+use App\Service\DbHandler;
+use App\Service\RouterService;
+use Exception;
+use stdClass;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
-Abstract Class AbstratcController 
+
+
+Abstract Class AbstractController implements InterfaceController
 {
-    private DbConnect $db;
-    private ApiHandler $api;
 
-    public function __construct(DbConnect $db,  ApiHandler $api)
+    public DbHandler $db;
+    public ApiHandler $api;
+    public $controller ;
+    public $method;
+    public $entity;
+    public $twig; 
+
+    const ACTIVATE_CACHE = false;
+    const VIEWS_PATH  = 'src/Views';
+
+    public function __construct()
     {
-        $this->db = DbConnect::connect();
-        $this->api = $api;
+        $initDb = new DbHandler();
+        $this->db = $initDb->connect();
+        $this->api = new ApiHandler();
     }
 
-    public function save()
+
+    public function render(string $tplFile) : void 
     {
+
+        $loader = new FilesystemLoader(self::VIEWS_PATH);
+        $twig = new Environment($loader, [
+            'cache' => Self::ACTIVATE_CACHE,
+        ]);
         
+        $twig->addGlobal('rootDirectory' , dirname(__FILE__, 3));
+        $this->twig = $twig;
+        $twig->load($tplFile);
+    }
+
+    public function jsonHttpResponse($httpCode, $data) : void
+    {
+        // remove any string that could create an invalid JSON 
+        // such as PHP Notice, Warning, logs...
+        ob_start();
+        ob_clean();
+
+        // this will clean up any previously added headers, to start clean
+        header_remove(); 
+
+        // Set the content type to JSON and charset 
+        // (charset can be set to something else)
+        // add any other header you may need, gzip, auth...
+        header("Content-type: application/json; charset=utf-8");
+
+        // Set your HTTP response code, refer to HTTP documentation
+        http_response_code($httpCode);
+        
+        
+        // encode your PHP Object or Array into a JSON string.
+        // stdClass or array
+        echo json_encode($data);
+
+        // making sure nothing is added
+        exit();
+    }
+
+    public function getUrlParams()
+    {
+        $url = $_SERVER['REQUEST_URI'];
+        $routeWithoutParams = strtok($url, '?');
+        $route = substr($routeWithoutParams, strpos($routeWithoutParams, '/')+1);
+        $routeParts = explode('/' , $route);
+
+        if(count($routeParts) == 2)
+            list( $this->controller, $this->method ) = $routeParts;
+        elseif(count($routeParts) == 3)
+            list( $this->controller, $this->method, $this->entity ) = $routeParts;
+        
+        $result = new stdClass();
+        $result->controller = $this->controller;
+        $result->method = $this->method;
+        $result->entity = $this->entity;
+
+        return $result;
     }
 
 }
