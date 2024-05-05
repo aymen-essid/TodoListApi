@@ -3,34 +3,25 @@
 namespace App\Controllers;
 
 use App\Entity\Task;
+use App\Service\TaskManager;
 use DateTime;
 
 class HomeController extends AbstractController
 {
+
+    private TaskManager $taskManager;
     
+    public function __construct()
+    {
+        parent::__construct();
+        $this->taskManager = new TaskManager();
+    }
 
     public function index(){
 
-        $task = new Task();
-        $task->setId(1);
-        $task->setTitle('task title');
-        $task->setDescription('Description text');
-        $task->setCompleted(0);
-        $task->setParentId(1);
-        $task->setCreatedAt(new DateTime());
-        $task->setUpdatedAt(new DateTime());
-
-
-        $this->jsonHttpResponse('200', $task->serialize() );
-
-        die;
+        $taskList = $this->taskManager->getAll();
 
         $this->render('home.html.twig');
-    }
-
-    public function action(){
-
-        echo "<h1>Action method</h1>";
     }
 
 }

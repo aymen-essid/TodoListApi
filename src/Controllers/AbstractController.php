@@ -13,7 +13,7 @@ use Twig\Loader\FilesystemLoader;
 
 
 
-Abstract Class AbstractController implements InterfaceController
+Abstract Class AbstractController
 {
 
     public $db;

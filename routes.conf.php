@@ -1,7 +1,9 @@
 <?php
 
-$routesConf = [
+$defaultHomeRoute = '/home/index';
 
+$routesConf = [
+    '/',
     '/home/index',
     '/home/action',
     '/api/index',

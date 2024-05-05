@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Exception;
+use stdClass;
 
 Class ApiHandler extends Exception
 {
@@ -54,17 +55,10 @@ Class ApiHandler extends Exception
         
         
         // encode your PHP Object or Array into a JSON string.
-        // stdClass or array
         echo json_encode($data);
 
         // making sure nothing is added
         exit();
     }
-    
-    
-
-
-
-
     
 }

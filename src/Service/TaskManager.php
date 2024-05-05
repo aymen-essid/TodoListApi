@@ -18,12 +18,21 @@ class TaskManager
 
     // Create a new task item
     public function create(Task $task) {
-        $sql = "INSERT INTO task (title, description, completed, parentId, createdAt) 
-                VALUES (?, ?, ?, ?, ?)";
+
+        // check if task parent exists
+        $parent = $this->getTaskById($task->getParentId());
+        if(!$parent)
+            $task->setParentId(1); // set default parent
+
+        $sql = "INSERT INTO task ( title, description, completed, parentId)  VALUES  ( :title, :description, :completed, :parentId) ";
         $stmt = $this->db->prepare($sql);
-        $now = new DateTime();
-        $stmt->execute([$task->getTitle(), $task->getDescription(), $task->getCompleted(),
-                        $task->getParentId(), $now->format('Y-m-d H:i:s')]);
+        $stmt->bindValue(':title', $task->getTitle());
+        $stmt->bindValue(':description', $task->getDescription());
+        $stmt->bindValue(':completed', $task->getCompleted(), PDO::PARAM_BOOL);
+        $stmt->bindValue(':parentId', $task->getParentId(), PDO::PARAM_INT);
+
+        $stmt->execute();
+
         return $this->db->lastInsertId();
     }
 
@@ -32,48 +41,51 @@ class TaskManager
         $sql = "SELECT * FROM task";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_OBJ);
+        $tasks = [];
+        
+        while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $task =  new Task($result['id'], $result['title'], $result['description'], $result['completed'] == 1, $result['parentId']); 
+            $tasks[] =  $task->jsonSerialize();
+        }
+        return $tasks;
     }
 
     // Read a task item by ID
     public function getTaskById(int $id) {
-        $sql = "SELECT * FROM task WHERE id = ?";
+        $sql = "SELECT * FROM task WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_OBJ);
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            return new Task($result['id'], $result['title'], $result['description'], $result['completed'] == 1, $result['parentId']);
+        }
+        return null;
     }
 
     // Update a task item
-    public function update($data) {
+    public function update(Task $task) {
     
-        $sql = "UPDATE task 
-                SET title = ?, description = ?, completed = ?, parentId = ?, updatedAt = ?
-                WHERE id = ?";
+        $sql = "UPDATE task SET title = :title, description = :description, completed = :completed, parentId = :parentId WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-        $now = new DateTime();
-        $stmt->execute([$data['title'], $data['description'], $data['completed'],
-                        $data['parentId'], $now->format('Y-m-d H:i:s'), $data['id']]);
-        return $stmt->rowCount() > 0;
+
+        $stmt->bindValue(':title', $task->getTitle());
+        $stmt->bindValue(':description', $task->getDescription());
+        $stmt->bindValue(':completed', $task->getCompleted() ? 1 : 0);
+        $stmt->bindValue(':parentId', $task->getParentId());
+        $stmt->bindValue(':id', $task->getId());
+        
+        
+        return $stmt->execute();
+
     }
 
     // Delete a task item
-    public function delete($id) {
-        $sql = "DELETE FROM task WHERE id = ?";
+    public function delete(Task $task) {
+        $sql = "DELETE FROM task WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id]);
-        return $stmt->rowCount() > 0;
-    }
-
-    public function arrayToTaskObject(array $data)
-    {
-        $task = new Task;
-        $task->setTitle($data['title']);
-        $task->setDescription($data['description']);
-        $task->setParentId($data['parentId']);
-        $task->setCompleted($data['completed']);
-        $task->setCreatedAt(new DateTime());
-
-        return $task;
+        $stmt->bindValue(':id', $task->getId());
+        $stmt->execute();
     }
 
 }

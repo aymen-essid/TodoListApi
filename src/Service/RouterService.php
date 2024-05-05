@@ -13,7 +13,7 @@ class RouterService
     private string $entity;
     private array  $routes;
 
-    public function __construct($uri, $routes=[])
+    public function __construct(string $uri, array $routes=[])
     {
         $this->uri = $uri;
         $this->routes = $routes;
