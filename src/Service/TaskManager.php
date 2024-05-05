@@ -10,7 +10,6 @@ class TaskManager
 {
     private $db;
 
-    // Constructor
     public function __construct() {
         $initDb = new DbHandler();
         $this->db = $initDb->connect();
@@ -36,7 +35,7 @@ class TaskManager
         return $this->db->lastInsertId();
     }
 
-    // Read a task item by ID
+    // Get all tasks
     public function getAll() {
         $sql = "SELECT * FROM task";
         $stmt = $this->db->prepare($sql);
@@ -50,7 +49,7 @@ class TaskManager
         return $tasks;
     }
 
-    // Read a task item by ID
+    // Get a task by ID
     public function getTaskById(int $id) {
         $sql = "SELECT * FROM task WHERE id = :id";
         $stmt = $this->db->prepare($sql);
@@ -63,7 +62,7 @@ class TaskManager
         return null;
     }
 
-    // Update a task item
+    // Update a task
     public function update(Task $task) {
     
         $sql = "UPDATE task SET title = :title, description = :description, completed = :completed, parentId = :parentId WHERE id = :id";
@@ -80,7 +79,7 @@ class TaskManager
 
     }
 
-    // Delete a task item
+    // Delete a task
     public function delete(Task $task) {
         $sql = "DELETE FROM task WHERE id = :id";
         $stmt = $this->db->prepare($sql);

@@ -34,7 +34,7 @@ Abstract Class AbstractController
     }
 
 
-    public function render(string $tplFile) : void 
+    public function render(string $tplFile, array $params=[]) : void 
     {
 
         $loader = new FilesystemLoader(self::VIEWS_PATH);
@@ -43,8 +43,7 @@ Abstract Class AbstractController
         ]);
         
         $twig->addGlobal('rootDirectory' , dirname(__FILE__, 3));
-        $this->twig = $twig;
-        $twig->load($tplFile);
+        echo $twig->render($tplFile, $params);
     }
 
 

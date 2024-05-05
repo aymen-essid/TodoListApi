@@ -21,7 +21,10 @@ class HomeController extends AbstractController
 
         $taskList = $this->taskManager->getAll();
 
-        $this->render('home.html.twig');
+
+        $this->render('home.html.twig', [
+            'taskList' => $taskList
+        ]);
     }
 
 }
