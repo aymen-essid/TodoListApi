@@ -2,10 +2,9 @@
 
 namespace App\Entity;
 
+use App\Service\JsonSerializableInterface;
 
-
-
-Class Task
+Class Task implements JsonSerializableInterface
 {
     private int $id;
     private int $parentId;
@@ -26,17 +25,6 @@ Class Task
         $this->setTitle($title);
         $this->setDescription($description);
         $this->setCompleted($completed);
-    }
-
-    public function jsonSerialize() : mixed 
-    {
-        return [
-          'id' => $this->getId(),
-          'title' => $this->getTitle(),
-          'description' => $this->getDescription(),
-          'completed' => $this->getCompleted(),
-          'parentId' => $this->getParentId() . " - title parent",
-        ];
     }
     
 
@@ -121,7 +109,6 @@ Class Task
     }
 
 
-
     /**
      * Get the value of Completed
      */ 
@@ -142,49 +129,15 @@ Class Task
         return $this;
     }
 
-    // public static function hydrate(stdClass $data): self
-    // {
-    //     $task = new Task;
-    //     $task->setId($data->id ?? '');
-    //     $task->setTitle($data->title ?? '');
-    //     $task->setDescription($data->description ?? '');
-    //     $task->setParentId($data->parentId ?? '');
-    //     $task->setCompleted($data->completed ?? '');
-    //     $task->setCreatedAt($data->createdAt ?? '');
-    //     $task->setUpdatedAt($data->updatedAt ?? '');
-        
-    //     return $task;
-    // }
-
-
-    // # Convert Task from Json to Task Object
-    // public function deserialize(string $json) : Task
-    // {
-    //     $data = json_decode($json, true);
-   
-    //     $task = new Task;
-    //     $task->setTitle($data['title']);
-    //     $task->setDescription($data['description']);
-    //     $task->setParentId($data['parentId']);
-    //     $task->setCompleted($data['completed']);
-
-    //     return $task;
-    // }
-
-    // # Convert Task Object to Json
-    // public function serialize(Task $obj) : string 
-    // {
-
-    //     $array = [
-    //         'id' => $obj->getId(),
-    //         'title' => $obj->getTitle(),
-    //         'description' => $obj->getDescription(),
-    //         'parentId' => $obj->getParentId(),
-    //         'completed' => $obj->getCompleted(),
-    //     ];
-
-    //     $json = json_encode($array);
-    //     return $json;
-    // }
+    public function jsonSerialize() : mixed 
+    {
+        return [
+          'id' => $this->getId(),
+          'title' => $this->getTitle(),
+          'description' => $this->getDescription(),
+          'completed' => $this->getCompleted(),
+          'parentId' => $this->getParentId() . " - title parent", // TODO fetch title parent Task
+        ];
+    }
 
 }

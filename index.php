@@ -16,14 +16,13 @@ use App\Service\RouterService;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-require_once('database/config.php');
-require_once('routes.conf.php');
+require_once('conf.php');
 
 # Init Db Connexion
 $dbConnexion = new DbHandler();
 
 # Init Routing
-$route = new RouterService($_SERVER['REQUEST_URI'], $routesConf );
+$route = new RouterService( $_SERVER['REQUEST_URI'], $routesConf );
 $route->dispatch();
 
 ?>

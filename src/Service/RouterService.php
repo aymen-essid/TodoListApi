@@ -7,13 +7,13 @@ namespace App\Service;
 class RouterService
 {
 
-    private string $uri;
+    private ?string $uri;
     private string $controller;
     private string $method;
     private string $entity;
-    private array  $routes;
+    private ?array  $routes;
 
-    public function __construct(string $uri, array $routes=[])
+    public function __construct(?string $uri = null , ?array $routes=[])
     {
         $this->uri = $uri;
         $this->routes = $routes;
@@ -21,16 +21,14 @@ class RouterService
         $this->entity = '';
     }
 
-
     public function dispatch()
     {
-
+        
         $routeWithoutParams = strtok($this->uri, '?');
         $route = substr($routeWithoutParams, strpos($routeWithoutParams, '/')+1);
         $routeParts = explode('/' , $route);
 
-
-        // Match the URI to a route
+        // Match the URI to a route config
         if (in_array($routeWithoutParams, $this->routes)) {
 
             if(count($routeParts) == 2)
@@ -66,6 +64,15 @@ class RouterService
     {
         return $this->entity;
     }
-    
-    
+
+    public function getUri()
+    {
+        return $this->uri;
+    }
+
+    public function setUri($uri)
+    {
+        $this->uri = $uri;
+    }
+
 }

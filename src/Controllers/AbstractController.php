@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Service\ApiException;
 use App\Service\ApiHandler;
+use App\Service\AuthHandler;
 use App\Service\DbHandler;
 use App\Service\RouterService;
 use Exception;
@@ -11,17 +12,20 @@ use stdClass;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
-
+require_once 'conf.php';
 
 Abstract Class AbstractController
 {
 
     public $db;
+    public AuthHandler $auth;
     public ApiHandler $api;
     public $controller ;
     public $method;
     public $entity;
     public $twig; 
+    public $route;
+    
 
     const ACTIVATE_CACHE = false;
     const VIEWS_PATH  = 'src/Views';
@@ -31,6 +35,8 @@ Abstract Class AbstractController
         $initDb = new DbHandler();
         $this->db = $initDb->connect();
         $this->api = new ApiHandler();
+        $this->auth = new AuthHandler();
+        $this->route = new RouterService($_SERVER['REQUEST_URI']);
     }
 
 
@@ -65,6 +71,11 @@ Abstract Class AbstractController
         $result->entity = $this->entity;
 
         return $result;
+    }
+
+    public function isAuthorized()
+    {
+       return ($this->auth->decodeJWT($this->auth->getToken())) ?? false ;
     }
 
 }

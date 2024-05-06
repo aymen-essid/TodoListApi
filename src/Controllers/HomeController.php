@@ -19,8 +19,9 @@ class HomeController extends AbstractController
 
     public function index(){
 
+        $this->isAuthorized();
+        
         $taskList = $this->taskManager->getAll();
-
 
         $this->render('home.html.twig', [
             'taskList' => $taskList

@@ -8,6 +8,8 @@ use stdClass;
 Class ApiHandler extends Exception
 {
     private string $url;
+    private $token;
+    
 
     public function processApiRequest(string $url){
         
@@ -18,6 +20,12 @@ Class ApiHandler extends Exception
         // Set cURL options
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // Return the response as a string instead of outputting it
         // Add more options as needed (e.g., CURLOPT_POST for POST requests, CURLOPT_POSTFIELDS for request body)
+
+        //Set your auth headers
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $this->token
+        ));
 
         // Execute cURL request
         try {
@@ -59,6 +67,11 @@ Class ApiHandler extends Exception
 
         // making sure nothing is added
         exit();
+    }
+
+    public function setToken(string $token) : void
+    {
+        $this->token = $token;
     }
     
 }

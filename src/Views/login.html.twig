@@ -1,0 +1,26 @@
+{% extends "base-template.html.twig" %}
+
+
+
+{% block body %}
+
+<link href="/public/css/login.css" rel="stylesheet" />
+      
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+
+        <ul class="list-group form-errors-list">
+        {% for error in formErrors %}
+            <li class="list-group-item">{{ error }}</li>
+        {% endfor %}
+        </ul>
+        <!-- Login Form -->
+        <form method="post">
+            <input type="text" id="login" class="fadeIn second" name="username" placeholder="login">
+            <input type="text" id="password" class="fadeIn third" name="password" placeholder="password">
+            <input type="submit" class="fadeIn fourth" value="Log In">
+        </form>
+
+    </div>
+</div>
+{% endblock %}
