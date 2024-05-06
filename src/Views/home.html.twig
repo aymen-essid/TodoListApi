@@ -7,8 +7,6 @@
                 <div class="list-group list-group-flush">
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">All taskes</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Add Task</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Update Task</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Remove task</a>
                 </div>
             </div>
             <!-- Page content wrapper-->
@@ -16,7 +14,7 @@
                 <!-- Top navigation-->
                 <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
                     <div class="container-fluid">
-                        <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
+                        <button class="btn btn-primary" id="sidebarToggle"> Hide Menu </button>
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
@@ -35,15 +33,35 @@
                 </nav>
                 <!-- Page content-->
                 <div class="container-fluid">
-                    <h1 class="mt-4">Simple Sidebar</h1>
-                    <p>The starting state of the menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will change.</p>
-                    <p>
-                        Make sure to keep all page content within the
-                        <code>#page-content-wrapper</code>
-                        . The top navbar is optional, and just for demonstration. Just create an element with the
-                        <code>#sidebarToggle</code>
-                        ID which will toggle the menu when clicked.
-                    </p>
+
+                    <div class="container">
+                        <div class="col-md-12 col-12 col-sm-12">
+                            <div class="card">
+                            <div class="card-header">
+                                <h4>Task Details</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Task Name</th>
+                                            <th>Description</th>
+                                            <th>Completed</th>
+                                            <th>Parent Task</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        {% for task in taskList %}
+                                            {% include "components/task.html.twig" %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
                 </div>
             </div>
 

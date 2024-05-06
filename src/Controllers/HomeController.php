@@ -22,7 +22,7 @@ class HomeController extends AbstractController
         $this->isAuthorized();
         
         $taskList = $this->taskManager->getAll();
-
+        // dd($taskList);
         $this->render('home.html.twig', [
             'taskList' => $taskList
         ]);

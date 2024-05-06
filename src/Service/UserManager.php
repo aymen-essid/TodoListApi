@@ -101,16 +101,16 @@ class UserManager
         }
     }
     
-      public function delete(int $id): bool 
-      {
+    public function delete(int $id): bool 
+    {
         // Prepare SQL statement for user deletion by ID
         $sql = "DELETE FROM user WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-    
+
         // Bind parameter with ID
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-    
+
         // Execute the statement and handle errors
         return $stmt->execute();
-      }
+    }
 }
